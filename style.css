@@ -1,0 +1,22 @@
+body{
+    background-color: blue;
+}
+
+#title{
+    color: green;
+    left: 50%;
+    margin-left: -7%;
+}
+
+#ct-head{
+    color: yellow;
+}
+
+#ct-body{
+    color: red;
+    display: none;
+}
+
+.cube-types:hover #ct-body{
+    display: inline-block;
+}
