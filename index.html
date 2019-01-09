@@ -2,18 +2,26 @@
 <html lang="en">
     <head>
         <title>Rubik's Cube Solver</title>
+
+        <link href="https://fonts.googleapis.com/css?family=ZCOOL+QingKe+HuangYou" rel="stylesheet">
         <link href='style.css' type='text/css' rel='stylesheet'/>
     </head>
 
     <h1 id="title">Rubik's Cube Solver</h1>
-    <div class="cube-types">
+
+    <div id="cube-types">
         <h2 id="ct-head">Select Cube Type</h2>
-        
+        <p id="ct-arrow">^</p>
+
         <div id="ct-body">
-            <h3>2x2</h3>
-            <h3>3x3</h3>
-            <h3>Sudoku</h3>
+            <h3 id="twox">2x2</h3>
+            <h3 id="threex">3x3</h3>
+            <h3 id="sudoku">Sudoku</h3>
         </div>
     </div>
+
+    <h2 id="chosen-type">Chosen Type</h2>
+
+    <script src="app.js"></script>
 
 </html>

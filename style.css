@@ -1,22 +1,74 @@
 body{
-    background-color: blue;
+    background-color: #155263;
 }
 
 #title{
-    color: green;
+    color: #ff9a3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+
+    position: relative;
     left: 50%;
     margin-left: -7%;
 }
 
 #ct-head{
-    color: yellow;
+    color: #ff6f3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+
+    position: absolute;
+    top: 10%;
+    left: 2%; 
+}
+
+#ct-arrow{
+    color: #ff6f3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+
+    transform: scaleY(-1);
+
+    position: absolute;
+    top: 13.7%;
+    left: 6.6%; 
 }
 
 #ct-body{
-    color: red;
+    color: #ffc93c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+    
+    display: none;
+
+    position: absolute;
+    top: 16.7%;
+    left: 6%;
+}
+
+#cube-types:hover #ct-body{
+    display: block;
+}
+
+#twox:hover{
+    font-size: 128%;
+}
+
+#threex:hover{
+    font-size: 128%;
+}
+
+#sudoku:hover{
+    font-size: 128%;
+}
+
+#chosen-type{
+    color: #ff6f3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+
+    position: absolute;
+    left: 25%;
+    top: 10%;
+
     display: none;
 }
 
-.cube-types:hover #ct-body{
-    display: inline-block;
+#light{
+    color: #ffc93c;
 }
