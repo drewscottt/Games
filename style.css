@@ -11,7 +11,7 @@ body{
     margin-left: -7%;
 }
 
-#ct-head{
+#diff-head{
     color: #ff6f3c;
     font-family: 'ZCOOL QingKe HuangYou', cursive;
 
@@ -20,7 +20,7 @@ body{
     left: 2%; 
 }
 
-#ct-arrow{
+#diff-arrow{
     color: #ff6f3c;
     font-family: 'ZCOOL QingKe HuangYou', cursive;
 
@@ -31,7 +31,7 @@ body{
     left: 6.6%; 
 }
 
-#ct-body{
+#diff-body{
     color: #ffc93c;
     font-family: 'ZCOOL QingKe HuangYou', cursive;
     
@@ -42,24 +42,24 @@ body{
     left: 6%;
 }
 
-#cube-types:hover #ct-body{
+#difficulties:hover #diff-body{
     display: block;
 }
 
-#twox:hover{
+#easy:hover{
     font-size: 128%;
 }
 
-#threex:hover{
+#medium:hover{
     font-size: 128%;
 }
 
-#sudoku:hover{
+#hard:hover{
     font-size: 128%;
 }
 
-#chosen-type{
-    color: #ff6f3c;
+#chosen-diff{
+    color: #ffc93c;
     font-family: 'ZCOOL QingKe HuangYou', cursive;
 
     position: absolute;
@@ -67,6 +67,44 @@ body{
     top: 10%;
 
     display: none;
+}
+
+table{
+    border: 3px solid #ff9a3c;
+    border-collapse: collapse;
+}
+
+td{
+    border: 1px solid #ff9a3c;
+    border-collapse: collapse;
+
+    padding-left: 4%;
+    font-size: 150%;
+}
+
+#puzzle{
+    color: #ff6f3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+
+    position: absolute;
+    left: 25%;
+    top: 19%;
+
+    height: 55%;
+    width: 30%;
+}
+
+.right{
+    border-right: 3px solid #ff9a3c;  
+}
+
+.bottom{
+    border-bottom: 3px solid #ff9a3c;  
+}
+
+.right-bottom{
+    border-bottom: 3px solid #ff9a3c; 
+    border-right: 3px solid #ff9a3c;  
 }
 
 #light{
