@@ -68,17 +68,22 @@ var rows =  [   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
 
 var available = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 var section = [0, 0, 0];
-var value, blockRow;
+var value, ind, chosenNum, blockRow;
+var numsNeeded = [];
 
 //Adds valid numbers to puzzle
 for(var row = 0; row < 9; row++){
-    
-    blockRow = Math.floor(row/3);
 
     for(var sec = 0; sec < 3; sec++){
 
         for(var num = 0; num < 3; num++){
-            spliceUnavailable(row, sec, num);
+    
+            for(var j = 0; j < 9; j++){
+                if(!(checkWithinRow(j, row)) || !(checkWithinBlock(j, row, sec)) || !(checkWithinColumn(j, num, sec))){                
+                    ind = available.indexOf(j);
+                    available.splice(ind, 1);
+                }
+            }
 
             /**
                 Checks if there are any available values
@@ -93,22 +98,31 @@ for(var row = 0; row < 9; row++){
             if(available.length === 0){
                 //Does this if there aren't any available values
                 
-                var chosenNum = chooseNumForRow(row);
+                for(var i = 0; i < 9; i++){
+                    if(!rows[row].includes(i)){
+                        numsNeeded.push(i);
+                    }
+                }
 
+                ind = Math.floor(Math.random()*numsNeeded.length);
+                chosenNum = numsNeeded[ind];
+                value = numsNeeded[ind];
+
+                console.log(chosenNum);
                 /**
                     1) Checks where chosenNum is conflicting (can be in a previous column, row, and/or block)
                     2) Fixes previous conflicts
                 **/
                 chosenNumInColumn(chosenNum, num, sec);
-                chosenNumInRow();
-                chosenNumInBlock();
 
-                value = chosenNum;
+                numsNeeded = [];
             }else{
                 //Does this if there are available values
-                var index = Math.floor(Math.random()*available.length);
-                value = available[index];
+                ind = Math.floor(Math.random()*available.length);
+                value = available[ind];
             }
+
+            blockRow = Math.floor(row/3);
 
             //Adds selected value to section, rows, columns, and blocks matricies
             section[num] = value + 1;
@@ -130,22 +144,6 @@ for(var row = 0; row < 9; row++){
     puzzle[row] = currentRow;
     //Resets row
     currentRow = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-}
-
-
-/** 
-    1) Checks the availability of numbers for a box
-    2) Splices unavailable numbers from available array
-**/
-function spliceUnavailable(row, sec, num){
-    var ind;
-    
-    for(var i = 0; i < 9; i++){
-        if(!(checkWithinRow(i, row)) || !(checkWithinBlock(i, row, sec)) || !(checkWithinColumn(i, num, sec))){                
-            ind = available.indexOf(i);
-            available.splice(ind, 1);
-        }
-    }
 }
 
 //Returns false if value is in row
@@ -174,24 +172,7 @@ function checkWithinColumn(value, num, sec){
         return false;
     }
 
-    return false;
-}
-
-//Returns a value required to complete the row if there are no available values
-function chooseNumForRow(row){
-    var numsNeeded = [];
-    var num;
-
-    for(var i = 0; i < 9; i++){
-        if(rows[row][i] === -1){
-            numsNeeded.push(i);
-        }
-    }
-
-    ind = Math.floor(Math.random()*numsNeeded.length);
-    chosenNum = numsNeeded[ind];
-
-    return num;
+    return true;
 }
 
 /**
@@ -201,17 +182,16 @@ function chooseNumForRow(row){
         b) Changes the switching box value to the original conflicting value
 **/
 function chosenNumInColumn(chosenNum, num, sec){
-    var change, newBlockRow, newRow;
-
     outer_loop:
     if(!checkWithinColumn(chosenNum, num, sec)){
         //Finds the row in which "chosenNum" already exists in column
-        newRow= columns[num+(3*sec)].indexOf(chosenNum);
-        newBlockRow = Math.floor(newRow/3);
+        var newRow = columns[num+(3*sec)].indexOf(chosenNum);
+        var newBlockRow = Math.floor(newRow/3);
 
-        for(var i = 1; i < num+(3*sec); i++){
+        for(var i = 1; i < num+(3*sec)+1; i++){
             //Assigns "change" to value in the same row as "chosenNum"
-            change = rows[newRow][num+(3*sec)-i];
+            var change = rows[newRow][num+(3*sec)-i];
+            console.log(change);
 
             //Checks if conflicting box is valid for "change"
             if(checkWithinColumn(change, num, sec) && checkWithinBlock(change, row, sec)){
@@ -222,6 +202,8 @@ function chosenNumInColumn(chosenNum, num, sec){
                     rows[newRow][num+(3*sec)] = change;
                     blocks[sec+(3*newBlockRow)][num+(3*(newRow%3))] = change;
                     puzzle[newRow][sec][num] = change;
+
+                    console.log(puzzle[newRow][sec][num]);
 
                     //Sets value of switching box to "chosenNum"
                     columns[(num-i)+(3*sec)][newRow] = chosenNum;
@@ -245,21 +227,13 @@ function chosenNumInColumn(chosenNum, num, sec){
 
                         blocks[(sec-Math.floor(i/3))+(3*newBlockRow)][blockInd+(3*(newRow%3))] = chosenNum;
                     }
-                    puzzle[ind][num+(3*sec)-i][] = chosenNum;
+                    puzzle[ind][num+(3*sec)-i][blockInd] = chosenNum;
 
                     break outer_loop;
                 }
             }
         }
     }
-}
-
-function chosenNumInBlock(){
-
-}
-
-function chosenNumInRow(){
-
 }
 
 //Puts each value from puzzle matrix into HTML
