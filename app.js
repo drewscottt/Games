@@ -64,18 +64,26 @@ var rows =  [   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
                 [-1, -1, -1, -1, -1, -1, -1, -1, -1]];
 
-var indexOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 18, 19, 20, 12, 13, 14, 15, 16, 17, 21, 22, 23, 24, 25, 26, 27, 36, 45, 54, 63, 72, 28, 37, 46, 55, 64, 73, 29, 38, 47, 56, 65, 74, 30, 39, 48, 57, 66, 75, 31, 40, 49, 58, 67, 76, 32, 41, 50, 59, 68, 77, 33, 42, 51, 60, 69, 78, 34, 43, 52, 61, 70, 79, 35, 44, 53, 62, 71, 80];
-
 var available = [];
-var preferred = [];
 
 var value, index, threeDigitCode, ind;
 var row, sec, num;
 var col, blk;
 
+var indexes = [];
+var unsolvedPuzzle = true;
+
+for(var i = 0; i < 81; i++){
+    indexes.push(i);
+}
+
 //Adds valid numbers to puzzle
-for (var i = 0; i < 81; i++){    
-    index = indexOrder[i];
+while(unsolvedPuzzle){    
+    index = Math.floor(Math.random()*indexes.length);
+    index = indexes[index];
+    indexes.splice(indexes.indexOf(index), 1);
+
+    console.log(index);
 
     threeDigitCode = indexToThreeDigit(index+1);
 
@@ -111,6 +119,10 @@ for (var i = 0; i < 81; i++){
 
     //Resets available values
     available = [];
+
+    if(indexes.length === 0){
+        unsolvedPuzzle = false;
+    }
 }
 
 function indexToThreeDigit(ind){
