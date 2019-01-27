@@ -16,8 +16,8 @@ body{
     font-family: 'ZCOOL QingKe HuangYou', cursive;
 
     position: absolute;
-    top: 10%;
-    left: 2%; 
+    top: 14%;
+    left: 5%; 
 }
 
 #diff-arrow{
@@ -27,8 +27,9 @@ body{
     transform: scaleY(-1);
 
     position: absolute;
-    top: 13.7%;
-    left: 6.6%; 
+    top: 18.6%;
+    left: 10.5%; 
+    font-size: 130%;
 }
 
 #diff-body{
@@ -38,8 +39,8 @@ body{
     display: none;
 
     position: absolute;
-    top: 16.7%;
-    left: 6%;
+    top: 22%;
+    left: 9%;
 }
 
 #difficulties:hover #diff-body{
@@ -47,15 +48,15 @@ body{
 }
 
 #easy:hover{
-    font-size: 128%;
+    font-size: 170%;
 }
 
 #medium:hover{
-    font-size: 128%;
+    font-size: 170%;
 }
 
 #hard:hover{
-    font-size: 128%;
+    font-size: 170%;
 }
 
 #chosen-diff{
@@ -109,4 +110,15 @@ td{
 
 #light{
     color: #ffc93c;
+}
+
+#help-tab{
+    color: #ff6f3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+    
+    display: none;
+
+    position: absolute;
+    top: 14%;
+    left: 5%;
 }
