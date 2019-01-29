@@ -33,7 +33,7 @@ body{
 }
 
 #diff-body{
-    color: #ffc93c;
+    color: #ff6f3c;
     font-family: 'ZCOOL QingKe HuangYou', cursive;
     
     display: none;
@@ -60,7 +60,7 @@ body{
 }
 
 #chosen-diff{
-    color: #ffc93c;
+    color: #ff6f3c;
     font-family: 'ZCOOL QingKe HuangYou', cursive;
 
     position: absolute;

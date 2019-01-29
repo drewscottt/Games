@@ -99,7 +99,30 @@ function generatePuzzle(){
 
 var puzzle = generatePuzzle();
 
-//Converts ind (0-80) to threeDigitCode (row + sec + num)
+//Difficulties tab
+var easy = document.getElementById("easy").addEventListener("click", easyClick),
+    medium = document.getElementById("medium").addEventListener("click", mediumClick),
+    hard = document.getElementById("hard").addEventListener("click", hardClick),
+    chosenDiff = document.getElementById("chosen-diff"),
+    diffInfo = document.getElementById("difficulties");   
+
+//Help tab
+var hint = document.getElementById("hint").addEventListener("click", hintClick);
+    solve = document.getElementById("solve").addEventListener("click", solveClick),
+    reset = document.getElementById("reset").addEventListener("click", resetClick),
+    newPuzzle = document.getElementById("new").addEventListener("click", newPuzzleClick),
+    helpInfo = document.getElementById("help-tab");
+
+
+var indexesShown = [],
+    originalIndexes = [],
+    availableIndexes = [];
+
+for(var i = 1; i <= 81; i++){
+    availableIndexes.push(i);
+}  
+
+//Converts ind (1-81) to threeDigitCode (row + sec + num)
 function indexToThreeDigit(ind){
     var threeDigit, num, sec, row, multiple;
     
@@ -124,51 +147,37 @@ function indexToThreeDigit(ind){
     return threeDigit;
 }
 
-var indexes = [],
-    indexesShown = [];
-//Populates indexes with 0-81
-for(var i = 1; i <= 81; i++){
-    indexes.push(i);
-}
-
-//Puts values from puzzle matrix into HTML
-//Param: how many values to be shown
-function puzzleToHTML(amountShown){
-    var threeDigitCode, index, number;
-
-    //Adds specificed amount of indexes to indexesShown[] and removes from indexes[]
-    for(var i = 0; i < amountShown; i++){
-        index = Math.floor(Math.random()*indexes.length);
-        number = indexes.splice(indexes.indexOf(index), 1);
-        indexesShown.push(number[0]);
-    }
-
-    for(var i = 0; i < indexesShown.length; i++){    
-        threeDigitCode = indexToThreeDigit(indexesShown[i]);
+//Puts values from indexesArray array into HTML
+function puzzleToHTML(indexesArray){
+    var threeDigitCode;
+    for(var i = 0; i < indexesArray.length; i++){    
+        threeDigitCode = indexToThreeDigit(indexesArray[i]);
         object = document.getElementById(threeDigitCode);
         object.innerHTML = puzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)];
     }
 }
 
-var easy = document.getElementById("easy").addEventListener("click", easyClick),
-    medium = document.getElementById("medium").addEventListener("click", mediumClick),
-    hard = document.getElementById("hard").addEventListener("click", hardClick),
-    chosenDiff = document.getElementById("chosen-diff"),
-    diffInfo = document.getElementById("difficulties"),
-    helpInfo = document.getElementById("help-tab");   
+function generateOriginalHints(amount){
+    var index;  
 
-var hint = document.getElementById("hint").addEventListener("click", hintClick);
-    solve = document.getElementById("solve").addEventListener("click", solveClick),
-    reset = document.getElementById("reset").addEventListener("click", resetClick),
-    newPuzzle = document.getElementById("new").addEventListener("click", newPuzzleClick);
-    
+    for(var i = 0; i < amount; i++){
+        index = Math.floor(Math.random()*availableIndexes.length);
+
+        indexesShown.push(availableIndexes[index]);
+        originalIndexes.push(availableIndexes[index]);
+
+        availableIndexes.splice(index, 1);
+    }
+}
+
 function easyClick(){
     chosenDiff.style.display = "block";
     chosenDiff.innerHTML = "Easy";
     diffInfo.style.display = "none";
     helpInfo.style.display = "block";
 
-    puzzleToHTML(30);
+    generateOriginalHints(30);
+    puzzleToHTML(originalIndexes);
 }
 
 function mediumClick(){
@@ -177,7 +186,8 @@ function mediumClick(){
     diffInfo.style.display = "none";
     helpInfo.style.display = "block";
 
-    puzzleToHTML(25);
+    generateOriginalHints(25);
+    puzzleToHTML(indexesShown);
 }
 
 function hardClick(){
@@ -186,39 +196,77 @@ function hardClick(){
     diffInfo.style.display = "none";
     helpInfo.style.display = "block";
 
-    puzzleToHTML(20);
+    generateOriginalHints(20);
+    puzzleToHTML(indexesShown);
 }
 
 function hintClick(){
-    puzzleToHTML(1);
+    var indexArr = [],
+        index,
+        location;
+    
+    //Selects location in availableIndexes array andgets that value
+    location = Math.floor(Math.random()*availableIndexes.length);
+    index = availableIndexes[location];
+    indexArr.push(index);
+
+    availableIndexes.splice(location, 1);
+
+    puzzleToHTML(indexArr);
 }
 
 function solveClick(){
-    puzzleToHTML(81);
+    for(var i = 0; i < availableIndexes.length; i++){
+        indexesShown.push(availableIndexes[i]);
+    }
+
+    puzzleToHTML(indexesShown);
 }
 
 function resetClick(){
+    //Clears board and refills availableIndexes
+    availableIndexes = [];
+    for(var i = 1; i <= 81; i++){
+        threeDigitCode = indexToThreeDigit(i);
+        object = document.getElementById(threeDigitCode);
+        object.innerHTML = " ";
+        availableIndexes.push(i);
+    }
 
+    //Sets indexesShown to originalIndexes and removes those indexes from availableIndexes
+    indexesShown = [];
+    for(var i = 0; i < originalIndexes.length; i++){
+        indexesShown[i] = originalIndexes[i];
+        availableIndexes.splice(availableIndexes.indexOf(originalIndexes[i]) ,1);
+    }
+
+    //Displays indexesShown (which at this point is originalIndexes)
+    puzzleToHTML(indexesShown);
 }
 
 function newPuzzleClick(){
     var threeDigitCode, object;
     
+    //Generates new puzzle
     puzzle = generatePuzzle();
     
+    //Clears board
     for(var i = 1; i <= 81; i++){
         threeDigitCode = indexToThreeDigit(i);
         object = document.getElementById(threeDigitCode);
         object.innerHTML = " ";
     }
 
+    //Displays difficulties tab and removes help tab
     diffInfo.style.display = "block";
     helpInfo.style.display = "none";
     chosenDiff.style.display = "none";
 
-    indexes = [];
+    //RESET: Refills availableIndexes and clears displayed indexes
+    availableIndexes = [];
     for(var i = 1; i <= 81; i++){
-        indexes.push(i);
+        availableIndexes.push(i);
     }
-    indexesShown = [];
+    indexesShown = [],
+    originalIndexes = [];
 }
