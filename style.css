@@ -122,3 +122,14 @@ td{
     top: 14%;
     left: 5%;
 }
+
+#congratulations{
+    color: #ff6f3c;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+    
+    display: none;
+
+    position: absolute;
+    top: 72%;
+    left: 28%;
+}

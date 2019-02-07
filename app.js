@@ -99,6 +99,18 @@ function generatePuzzle(){
 
 var puzzle = generatePuzzle();
 
+var userPuzzle = [  [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]];
+
 //Enables user to click on and enter values into all indexes
 for(var i = 1; i <= 81; i++){
     document.getElementById(indexToThreeDigit(i)).addEventListener("click", clickAnIndex);
@@ -162,12 +174,20 @@ function generateOriginalDisplay(amount){
 
 //Reveals given array of indexes to user; used in the above functions and help functions
 function puzzleToHTML(indexesArray){
-    var threeDigitCode, loc;
+    var threeDigitCode, loc, value;
     for(var i = 0; i < indexesArray.length; i++){    
         threeDigitCode = indexToThreeDigit(indexesArray[i]);
+
+        value = puzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)];
+
         loc = document.getElementById(threeDigitCode);
-        loc.innerHTML = puzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)];
+        loc.innerHTML = value;
+        loc.style.color = "#ff6f3c";
         loc.style.opacity = 1;
+
+        userPuzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)] = value;
+    
+        checkUserBoard();
     }
 }
 
@@ -241,6 +261,7 @@ function solveClick(){
         loc = document.getElementById(threeDigitCode);
         loc.innerHTML = " ";
         loc.style.color = "#ff6f3c";
+        clearInterval(currentBlinker);
     }
     
     for(var i = 0; i < availableIndexes.length; i++){
@@ -358,6 +379,10 @@ function clickAnIndex(){
 
         changeValue = false;
         
+        var row = this.id.substring(0,1);
+        var sec = this.id.substring(1,2);
+        var num = this.id.substring(2,3);
+
         window.addEventListener("keydown", enterAValue);
 
         function enterAValue(){
@@ -367,7 +392,29 @@ function clickAnIndex(){
                 currentLocation.innerHTML = input;
                 window.removeEventListener("keydown", enterAValue);
                 changeValue = true;
+
+                userPuzzle[row][sec][num] = input;
+
+                checkUserBoard();
             }
         }
+    }
+}
+
+function checkUserBoard(){
+    var equiv = true;
+    for(var i = 1; i <= 81; i++){
+        var threeDigits = indexToThreeDigit(i);
+        var row = threeDigits.substring(0,1);
+        var sec = threeDigits.substring(1,2);
+        var num = threeDigits.substring(2,3);
+
+        if(puzzle[row][sec][num] !== userPuzzle[row][sec][num]){
+            equiv = false;
+        }
+    }
+
+    if(equiv){
+        document.getElementById("congratulations").style.display = "block";
     }
 }
