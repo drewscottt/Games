@@ -186,7 +186,6 @@ function puzzleToHTML(indexesArray){
         loc.style.opacity = 1;
 
         userPuzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)] = value;
-    
         checkUserBoard();
     }
 }
@@ -262,12 +261,11 @@ function solveClick(){
     for(var i = 1; i <= 81; i++){
         threeDigitCode = indexToThreeDigit(i);
         loc = document.getElementById(threeDigitCode);
-        loc.innerHTML = " ";
+        loc.innerHTML = "";
         loc.style.color = "#ff6f3c";
         clearInterval(currentBlinker);
         arr.push(i);
     }
-
     puzzleToHTML(arr);
 }
 
