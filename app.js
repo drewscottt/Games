@@ -405,28 +405,18 @@ function clickAnIndex(){
         window.addEventListener("keydown", enterAValue);
 
         function enterAValue(){
-            if(event.keyCode === 16){
-                //Changes to notes setting if shift is clicked
-                shiftClicked = true;
-                currentLocation.style.fontSize = "80%";
-                currentLocation.style.textAlign = "right";
-                currentLocation.style.verticalAlign = "top";
-            }else if(event.keyCode === 8){
-
-            }else{
-                //Enters user's value (if it's valid (1-9)) into the box based on setting (either notes or regular)
-                var input = String.fromCharCode(event.keyCode);
-                if(!isNaN(input) && input > 0){
-                    clearInterval(currentBlinker);
-                    currentLocation.innerHTML = input;
-                    userPuzzle[row][sec][num] = input;
-                    checkUserBoard();
-                    window.removeEventListener("keydown", enterAValue);
-                    }
-                }
-            }    
+            //Enters user's value (if it's valid (1-9)) into the box based on setting (either notes or regular)
+            var input = String.fromCharCode(event.keyCode);
+            if(!isNaN(input) && input > 0){
+                clearInterval(currentBlinker);
+                currentLocation.innerHTML = input;
+                userPuzzle[row][sec][num] = input;
+                checkUserBoard();
+                window.removeEventListener("keydown", enterAValue);
+            }
         }
     }
+}
 
 function displayBlinker(){
     currentLocation.style.color = "#ffc93c";
