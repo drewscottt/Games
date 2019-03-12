@@ -399,13 +399,11 @@ function clickAnIndex(){
 
         //RESET: removes old keyListener and blinkers
         window.removeEventListener("keydown", enterAValue);
-        clearInterval(notesBlinker);
         clearInterval(lastBlinker);
 
         //Listens for user key input
         window.addEventListener("keydown", enterAValue);
 
-        var shiftClicked = false;
         function enterAValue(){
             if(event.keyCode === 16){
                 //Changes to notes setting if shift is clicked
@@ -420,47 +418,21 @@ function clickAnIndex(){
                 var input = String.fromCharCode(event.keyCode);
                 if(!isNaN(input) && input > 0){
                     clearInterval(currentBlinker);
-                    if(shiftClicked){
-                        //Adds notes into box (using notes array) until user clicks away
-                        if(notes[threeDigitToIndex(currentID)] === undefined){
-                            notes[threeDigitToIndex(currentID)] = input.toString();
-                        }else{
-                            if(!notes[threeDigitToIndex(currentID)].includes(input.toString())){
-                                notes[threeDigitToIndex(currentID)] += input.toString();
-                            }
-                        }
-                        
-                        notesBlinker = setInterval(function() {
-                            var activated = true;
-                            if(activated){
-                                currentLocation.innerHTML = notes[threeDigitToIndex(currentID)] + "|";
-                                activated = false;
-                            }else{
-                                currentLocation.innerHTML = notes[threeDigitToIndex(currentID)];
-                                activated = true;
-                            }
-                        }, 700);
-                    }else{
-                        currentLocation.innerHTML = input;
-                        userPuzzle[row][sec][num] = input;
-                        checkUserBoard();
-                        window.removeEventListener("keydown", enterAValue);
+                    currentLocation.innerHTML = input;
+                    userPuzzle[row][sec][num] = input;
+                    checkUserBoard();
+                    window.removeEventListener("keydown", enterAValue);
                     }
                 }
             }    
         }
     }
-}
 
 function displayBlinker(){
     currentLocation.style.color = "#ffc93c";
     currentLocation.innerHTML = "";
     currentLocation.innerHTML += "|";
     currentLocation.style.opacity = 1;
-    currentLocation.style.fontSize = "150%";
-    currentLocation.style.textAlign = "left";
-    currentLocation.style.verticalAlign = "middle";
-    currentLocation.style.paddingLeft = "4%";
 }
 
 function checkUserBoard(){
