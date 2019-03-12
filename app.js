@@ -351,7 +351,7 @@ for(var i = 1; i <= 81; i++){
     loc.style.opacity = 0;
 }
 
-var currentID, lastID, currentLocation, lastLocation, lastBlinker, currentBlinker, notesBlinker, activated;
+var currentID, lastID, currentLocation, lastLocation, lastBlinker, currentBlinker, notesBlinker, activated, valueEntered;
 function clickAnIndex(){
     //Ensures user can't enter values in a blank or solved puzzle
     if(indexesShown.length > 0 && indexesShown.length < 81){
@@ -393,6 +393,10 @@ function clickAnIndex(){
         //RESET: removes old keyListener and blinkers
         window.removeEventListener("keydown", enterAValue);
         clearInterval(lastBlinker);
+        if(!valueEntered){
+            lastLocation.innerHTML = "";
+        }
+        valueEntered = false;
 
         //Listens for user key input
         window.addEventListener("keydown", enterAValue);
@@ -406,6 +410,7 @@ function clickAnIndex(){
                 userPuzzle[row][sec][num] = input;
                 checkUserBoard();
                 window.removeEventListener("keydown", enterAValue);
+                valueEntered = true;
             }
         }
     }
