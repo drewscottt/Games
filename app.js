@@ -183,10 +183,6 @@ function puzzleToHTML(indexesArray){
         loc = document.getElementById(threeDigitCode);
         loc.innerHTML = value;
         loc.style.color = "#ff6f3c";
-        loc.style.fontSize = "150%";
-        loc.style.textAlign = "left";
-        loc.style.verticalAlign = "middle";
-        loc.style.paddingLeft = "4%";
         loc.style.opacity = 1;
 
         userPuzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)] = value;
@@ -261,20 +257,17 @@ function hintClick(){
 
 //Reveals all indexes to user
 function solveClick(){
-    var threeDigitCode, loc;
+    var threeDigitCode, loc, arr;
     for(var i = 1; i <= 81; i++){
         threeDigitCode = indexToThreeDigit(i);
         loc = document.getElementById(threeDigitCode);
         loc.innerHTML = " ";
         loc.style.color = "#ff6f3c";
         clearInterval(currentBlinker);
-    }
-    
-    for(var i = 0; i < availableIndexes.length; i++){
-        indexesShown.push(availableIndexes[i]);
+        arr.push(i);
     }
 
-    puzzleToHTML(indexesShown);
+    puzzleToHTML(arr);
 }
 
 //Clears display except for original indexes
