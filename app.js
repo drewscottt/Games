@@ -183,6 +183,10 @@ function puzzleToHTML(indexesArray){
         loc = document.getElementById(threeDigitCode);
         loc.innerHTML = value;
         loc.style.color = "#ff6f3c";
+        loc.style.fontSize = "150%";
+        loc.style.textAlign = "left";
+        loc.style.verticalAlign = "middle";
+        loc.style.paddingLeft = "4%";
         loc.style.opacity = 1;
 
         userPuzzle[threeDigitCode.substring(0,1)][threeDigitCode.substring(1,2)][threeDigitCode.substring(2,3)] = value;
@@ -234,6 +238,7 @@ var hint = document.getElementById("hint").addEventListener("click", hintClick);
     newPuzzle = document.getElementById("new").addEventListener("click", newPuzzleClick),
     helpInfo = document.getElementById("help-tab");
 
+var congrats = document.getElementById("congratulations");
 //Reveals one index to user
 function hintClick(){
     var arr = [],
@@ -290,7 +295,8 @@ function resetClick(){
 
     //Sets indexesShown to originalIndexes and removes those indexes from availableIndexes
     indexesShown = [];
-    userIndexes = [];
+    userIndexes = [],
+    notes = [];
     for(var i = 0; i < originalIndexes.length; i++){
         indexesShown[i] = originalIndexes[i];
         userIndexes[i] = originalIndexes[i];
@@ -323,6 +329,7 @@ function newPuzzleClick(){
     diffInfo.style.display = "block";
     helpInfo.style.display = "none";
     chosenDiff.style.display = "none";
+    congrats.style.display = "none";
 
     //RESET: Refills availableIndexes and clears displayed indexes
     availableIndexes = [];
@@ -331,13 +338,15 @@ function newPuzzleClick(){
     }
     indexesShown = [],
     userIndexes = [],
-    originalIndexes = [];
+    originalIndexes = [],
+    notes = [];
 }
 
 var indexesShown = [], //Contains only the indexes (1-81) revealed to user by the computer 
     userIndexes = [],  //Contains indexes (1-81) displayed to user, includes computer revealed and user input
     originalIndexes = [], //Contains only the indexes (1-81) originally revealed to the user
-    availableIndexes = []; //Contains the indexes (1-81) that can still be revealed to user; compliment set of "indexesShown"
+    availableIndexes = [], //Contains the indexes (1-81) that can still be revealed to user; compliment set of "indexesShown"
+    notes = [];
 for(var i = 1; i <= 81; i++){
     availableIndexes.push(i);
 } 
@@ -349,56 +358,109 @@ for(var i = 1; i <= 81; i++){
     loc.style.opacity = 0;
 }
 
-var currentID, lastID, currentLocation, lastLocation, lastBlinker, currentBlinker;
-var changeValue = true;
+var currentID, lastID, currentLocation, lastLocation, lastBlinker, currentBlinker, notesBlinker, activated;
 function clickAnIndex(){
     //Ensures user can't enter values in a blank or solved puzzle
     if(indexesShown.length > 0 && indexesShown.length < 81){
-        lastID = currentID;
+        //ID & Location stuff--enables referencing
+        lastID = currentID; //row + sec + num
         currentID = this.id;
-
         currentLocation = document.getElementById(currentID);
         lastLocation = document.getElementById(lastID);
+        var row = currentID.substring(0,1);
+        var sec = currentID.substring(1,2);
+        var num = currentID.substring(2,3);
 
+        //Blinker stuff
+        activated = false;
         lastBlinker = currentBlinker;
         currentBlinker = setInterval(function() {
-            currentLocation.innerHTML = (currentLocation.innerHTML == '|' ? '' : '|');
+            if(userPuzzle[row][sec][num] === 0 || userPuzzle[row][sec][num] === "" || userPuzzle[row][sec][num] === undefined){
+                //Does this if the user HAS NOT enter anything into the box
+                if(activated){
+                    currentLocation.innerHTML = "|";
+                    activated = false;
+                }else{
+                    currentLocation.innerHTML = "";
+                    activated = true;
+                }
+            }else{
+                //Does this is the user HAS entered something into the box
+                if(activated){
+                    currentLocation.innerHTML = userPuzzle[row][sec][num] + "|";
+                    activated = false;
+                }else{
+                    currentLocation.innerHTML = userPuzzle[row][sec][num];
+                    activated = true;
+                }
+            }
         }, 700);
+        displayBlinker();
 
-        //Displays blinking line in current selected box
-        currentLocation.style.color = "#ffc93c";
-        currentLocation.innerHTML = "|";
-        currentLocation.style.opacity = 1;
-
-        //Removes blinking line from last selected block
-        if(!changeValue){
-            lastLocation.innerHTML = "10";
-            lastLocation.style.opacity = 0;
-        }
+        //RESET: removes old keyListener and blinkers
+        window.removeEventListener("keydown", enterAValue);
+        clearInterval(notesBlinker);
         clearInterval(lastBlinker);
 
-        changeValue = false;
-        
-        var row = this.id.substring(0,1);
-        var sec = this.id.substring(1,2);
-        var num = this.id.substring(2,3);
-
+        //Listens for user key input
         window.addEventListener("keydown", enterAValue);
 
+        var shiftClicked = false;
         function enterAValue(){
-            var input = String.fromCharCode(event.keyCode);
-            if(!isNaN(input) && input > 0){
-                clearInterval(currentBlinker);
-                currentLocation.innerHTML = input;
-                window.removeEventListener("keydown", enterAValue);
-                changeValue = true;
+            if(event.keyCode === 16){
+                //Changes to notes setting if shift is clicked
+                shiftClicked = true;
+                currentLocation.style.fontSize = "80%";
+                currentLocation.style.textAlign = "right";
+                currentLocation.style.verticalAlign = "top";
+            }else if(event.keyCode === 8){
 
-                userPuzzle[row][sec][num] = input;
-
-                checkUserBoard();
-            }
+            }else{
+                //Enters user's value (if it's valid (1-9)) into the box based on setting (either notes or regular)
+                var input = String.fromCharCode(event.keyCode);
+                if(!isNaN(input) && input > 0){
+                    clearInterval(currentBlinker);
+                    if(shiftClicked){
+                        //Adds notes into box (using notes array) until user clicks away
+                        if(notes[threeDigitToIndex(currentID)] === undefined){
+                            notes[threeDigitToIndex(currentID)] = input.toString();
+                        }else{
+                            if(!notes[threeDigitToIndex(currentID)].includes(input.toString())){
+                                notes[threeDigitToIndex(currentID)] += input.toString();
+                            }
+                        }
+                        
+                        notesBlinker = setInterval(function() {
+                            var activated = true;
+                            if(activated){
+                                currentLocation.innerHTML = notes[threeDigitToIndex(currentID)] + "|";
+                                activated = false;
+                            }else{
+                                currentLocation.innerHTML = notes[threeDigitToIndex(currentID)];
+                                activated = true;
+                            }
+                        }, 700);
+                    }else{
+                        currentLocation.innerHTML = input;
+                        userPuzzle[row][sec][num] = input;
+                        checkUserBoard();
+                        window.removeEventListener("keydown", enterAValue);
+                    }
+                }
+            }    
         }
     }
+}
+
+function displayBlinker(){
+    currentLocation.style.color = "#ffc93c";
+    currentLocation.innerHTML = "";
+    currentLocation.innerHTML += "|";
+    currentLocation.style.opacity = 1;
+    currentLocation.style.fontSize = "150%";
+    currentLocation.style.textAlign = "left";
+    currentLocation.style.verticalAlign = "middle";
+    currentLocation.style.paddingLeft = "4%";
 }
 
 function checkUserBoard(){
@@ -415,6 +477,6 @@ function checkUserBoard(){
     }
 
     if(equiv){
-        document.getElementById("congratulations").style.display = "block";
+        congrats.style.display = "block";
     }
 }
