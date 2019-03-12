@@ -257,7 +257,8 @@ function hintClick(){
 
 //Reveals all indexes to user
 function solveClick(){
-    var threeDigitCode, loc, arr;
+    var threeDigitCode, loc;
+    var arr = [];
     for(var i = 1; i <= 81; i++){
         threeDigitCode = indexToThreeDigit(i);
         loc = document.getElementById(threeDigitCode);
