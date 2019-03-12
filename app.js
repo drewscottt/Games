@@ -250,6 +250,7 @@ function hintClick(){
     puzzleIndex = availableIndexes[arrayIndex];
     arr.push(puzzleIndex);
 
+    indexesShown.push(arrayIndex);
     availableIndexes.splice(arrayIndex, 1);
 
     puzzleToHTML(arr);
