@@ -4,11 +4,11 @@ function generatePuzzle(){
     var value, ind;
     var col, blk;
     var unsolvedPuzzle = true;
-    var failure;
+    var noFailure;
     
     //Adds valid numbers to puzzle
     while(unsolvedPuzzle){
-        failure = 0;
+        noFailure = true;
     
         puzzle = [  [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
                     [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
@@ -68,11 +68,11 @@ function generatePuzzle(){
         
                     //Checks if there are any available values; chooses one if there is
                     if(available.length === 0){
-                        //Does this if there aren't any available values
-                        failure = 1;
+                        //Restarts all generation if there aren't any available values
+                        noFailure = false;
                         break outer_loop;
                     }else{
-                        //Does this if there are available values
+                        //Selects random value if there are available values
                         ind = Math.floor(Math.random()*available.length);
                         value = available[ind];
                     }
@@ -89,7 +89,7 @@ function generatePuzzle(){
             }
         }
     
-        if(failure === 0){
+        if(noFailure){
             unsolvedPuzzle = false;
         }
     }
