@@ -97,9 +97,137 @@ function generatePuzzle(){
     return puzzle;
 }
 
-var puzzle = generatePuzzle();
+var puzzle, userPuzzle;
+var indexesShown = [], //Contains only the indexes (1-81) revealed to user by the computer 
+    userIndexes = [],  //Contains indexes (1-81) displayed to user, includes computer revealed and user input
+    originalIndexes = [], //Contains only the indexes (1-81) originally revealed to the user
+    availableIndexes = []; //Contains the indexes (1-81) that can still be revealed to user; compliment set of "indexesShown"
 
-var userPuzzle = [  [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+//Difficulties tab stuff
+var easy = document.getElementById("easy").addEventListener("click", function(){
+        chosenDiff.style.display = "block";
+        chosenDiff.innerHTML = "Easy";
+        diffInfo.style.display = "none";
+        helpInfo.style.display = "block";
+
+        generateOriginalDisplay(30);
+        puzzleToHTML(originalIndexes);
+    }),
+    medium = document.getElementById("medium").addEventListener("click", function(){
+        chosenDiff.style.display = "block";
+        chosenDiff.innerHTML = "Medium";
+        diffInfo.style.display = "none";
+        helpInfo.style.display = "block";
+
+        generateOriginalDisplay(25);
+        puzzleToHTML(indexesShown);
+    }),
+    hard = document.getElementById("hard").addEventListener("click", function(){
+        chosenDiff.style.display = "block";
+        chosenDiff.innerHTML = "Hard";
+        diffInfo.style.display = "none";
+        helpInfo.style.display = "block";
+
+        generateOriginalDisplay(20);
+        puzzleToHTML(indexesShown);
+    }),
+    chosenDiff = document.getElementById("chosen-diff"),
+    diffInfo = document.getElementById("difficulties");
+
+//Help tab stuff
+var hint = document.getElementById("hint").addEventListener("click", function(){
+        var arr = [],
+            arrayIndex,
+            puzzleIndex;
+        
+        //Selects location in availableIndexes array andgets that value
+        arrayIndex = Math.floor(Math.random()*availableIndexes.length);
+        puzzleIndex = availableIndexes[arrayIndex];
+        arr.push(puzzleIndex);
+
+        indexesShown.push(arrayIndex);
+        availableIndexes.splice(arrayIndex, 1);
+
+        puzzleToHTML(arr);
+
+        //Removes user's ability to click on and enter a value into this index
+        document.getElementById(indexToThreeDigit(puzzleIndex)).removeEventListener("click", clickAnIndex);
+        });
+    solve = document.getElementById("solve").addEventListener("click", function(){
+        var threeDigitCode, loc;
+        var arr = [];
+        for(var i = 1; i <= 81; i++){
+            threeDigitCode = indexToThreeDigit(i);
+            loc = document.getElementById(threeDigitCode);
+            loc.innerHTML = "";
+            loc.style.color = "#ff6f3c";
+            clearInterval(currentBlinker);
+            arr.push(i);
+        }
+        puzzleToHTML(arr);
+        }),
+    reset = document.getElementById("reset").addEventListener("click", function(){
+        //Clears board and refills availableIndexes
+        userPuzzle = [  [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+        
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+        
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                        [[0, 0, 0], [0, 0, 0], [0, 0, 0]]];
+
+        var threeDigitCode, loc;
+        availableIndexes = [];
+        for(var i = 1; i <= 81; i++){
+            threeDigitCode = indexToThreeDigit(i);
+            loc = document.getElementById(threeDigitCode);
+            loc.innerHTML = "10";
+            loc.style.opacity = 0;
+            loc.style.color = "#ff6f3c";
+            availableIndexes.push(i);
+
+            //Enables user to click on and enter values into all indexes
+            document.getElementById(indexToThreeDigit(i)).addEventListener("click", clickAnIndex);
+        }
+
+        //Sets indexesShown to originalIndexes and removes those indexes from availableIndexes
+        indexesShown = [];
+        userIndexes = [],
+        notes = [];
+        for(var i = 0; i < originalIndexes.length; i++){
+            var ind = originalIndexes[i];
+            indexesShown[i] = ind;
+            userIndexes[i] = ind;
+            availableIndexes.splice(availableIndexes.indexOf(originalIndexes[i]) ,1);
+            
+            var row = indexToThreeDigit(ind).substring(0,1);
+            var sec = indexToThreeDigit(ind).substring(1,2);
+            var num = indexToThreeDigit(ind).substring(2,3);
+            userPuzzle[row][sec][num] = puzzle[row][sec][num];
+
+            //Removes user's ability to click on and enter values into this index
+            document.getElementById(indexToThreeDigit(originalIndexes[i])).removeEventListener("click", clickAnIndex);
+        }
+
+        //Displays indexesShown (which at this point is originalIndexes)
+        puzzleToHTML(indexesShown);
+        }),
+    newPuzzleTab = document.getElementById("new").addEventListener("click", newPuzzle),
+    helpInfo = document.getElementById("help-tab");
+    
+var congrats = document.getElementById("congratulations");
+
+//Clears display, resets variables and generates new puzzle
+function newPuzzle(){
+    //Generates new puzzle
+    puzzle = generatePuzzle();
+    
+    //Values displayed to user
+    userPuzzle = [  [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
                     [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
                     [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
     
@@ -111,51 +239,42 @@ var userPuzzle = [  [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
                     [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
                     [[0, 0, 0], [0, 0, 0], [0, 0, 0]]];
 
-//Enables user to click on and enter values into all indexes
-for(var i = 1; i <= 81; i++){
-    document.getElementById(indexToThreeDigit(i)).addEventListener("click", clickAnIndex);
+    //Clears board
+    var threeDigitCode, loc;
+    for(var i = 1; i <= 81; i++){
+        threeDigitCode = indexToThreeDigit(i);
+        loc = document.getElementById(threeDigitCode);
+        loc.innerHTML = "10";
+        loc.style.opacity = 0;
+        availableIndexes.push(i);
+    }
+
+    //Displays difficulties tab and removes help tab
+    diffInfo.style.display = "block";
+    helpInfo.style.display = "none";
+    chosenDiff.style.display = "none";
+    congrats.style.display = "none";
+
+    //RESET: Refills availableIndexes and clears displayed indexes
+    availableIndexes = [];
+    for(var i = 1; i <= 81; i++){
+        availableIndexes.push(i);
+    }
+    indexesShown = [],
+    userIndexes = [],
+    originalIndexes = [];
+
+    //Enables user to click on and enter values into all indexes
+    for(var i = 1; i <= 81; i++){
+        document.getElementById(indexToThreeDigit(i)).addEventListener("click", clickAnIndex);
+    }
+
+    clearInterval(currentBlinker);
 }
 
-//Difficulties tab stuff
-var easy = document.getElementById("easy").addEventListener("click", easyClick),
-    medium = document.getElementById("medium").addEventListener("click", mediumClick),
-    hard = document.getElementById("hard").addEventListener("click", hardClick),
-    chosenDiff = document.getElementById("chosen-diff"),
-    diffInfo = document.getElementById("difficulties");   
-
-//These functions create the original display to the user, based on difficulty (changes how many indexes are revealed)
-function easyClick(){
-    chosenDiff.style.display = "block";
-    chosenDiff.innerHTML = "Easy";
-    diffInfo.style.display = "none";
-    helpInfo.style.display = "block";
-
-    generateOriginalDisplay(30);
-    puzzleToHTML(originalIndexes);
-}
-
-function mediumClick(){
-    chosenDiff.style.display = "block";
-    chosenDiff.innerHTML = "Medium";
-    diffInfo.style.display = "none";
-    helpInfo.style.display = "block";
-
-    generateOriginalDisplay(25);
-    puzzleToHTML(indexesShown);
-}
-
-function hardClick(){
-    chosenDiff.style.display = "block";
-    chosenDiff.innerHTML = "Hard";
-    diffInfo.style.display = "none";
-    helpInfo.style.display = "block";
-
-    generateOriginalDisplay(20);
-    puzzleToHTML(indexesShown);
-}
-
-//Generates the original board shown to user; used in the above functions
+//Generates the original board shown to user
 function generateOriginalDisplay(amount){
+    console.log("p");
     var arrayIndex, puzzleIndex;  
 
     for(var i = 0; i < amount; i++){
@@ -172,7 +291,7 @@ function generateOriginalDisplay(amount){
     }
 }
 
-//Reveals given array of indexes to user; used in the above functions and help functions
+//Reveals given array of indexes to user
 function puzzleToHTML(indexesArray){
     var threeDigitCode, loc, value;
     for(var i = 0; i < indexesArray.length; i++){    
@@ -226,124 +345,6 @@ function threeDigitToIndex(threeDigit){
     return ind;
 }
 
-//Help tab stuff
-var hint = document.getElementById("hint").addEventListener("click", hintClick);
-    solve = document.getElementById("solve").addEventListener("click", solveClick),
-    reset = document.getElementById("reset").addEventListener("click", resetClick),
-    newPuzzle = document.getElementById("new").addEventListener("click", newPuzzleClick),
-    helpInfo = document.getElementById("help-tab");
-
-var congrats = document.getElementById("congratulations");
-//Reveals one index to user
-function hintClick(){
-    var arr = [],
-        arrayIndex,
-        puzzleIndex;
-    
-    //Selects location in availableIndexes array andgets that value
-    arrayIndex = Math.floor(Math.random()*availableIndexes.length);
-    puzzleIndex = availableIndexes[arrayIndex];
-    arr.push(puzzleIndex);
-
-    indexesShown.push(arrayIndex);
-    availableIndexes.splice(arrayIndex, 1);
-
-    puzzleToHTML(arr);
-
-    //Removes user's ability to click on and enter a value into this index
-    document.getElementById(indexToThreeDigit(puzzleIndex)).removeEventListener("click", clickAnIndex);
-}
-
-//Reveals all indexes to user
-function solveClick(){
-    var threeDigitCode, loc;
-    var arr = [];
-    for(var i = 1; i <= 81; i++){
-        threeDigitCode = indexToThreeDigit(i);
-        loc = document.getElementById(threeDigitCode);
-        loc.innerHTML = "";
-        loc.style.color = "#ff6f3c";
-        clearInterval(currentBlinker);
-        arr.push(i);
-    }
-    puzzleToHTML(arr);
-}
-
-//Clears display except for original indexes
-function resetClick(){
-    //Clears board and refills availableIndexes
-    var threeDigitCode, loc;
-    availableIndexes = [];
-    for(var i = 1; i <= 81; i++){
-        threeDigitCode = indexToThreeDigit(i);
-        loc = document.getElementById(threeDigitCode);
-        loc.innerHTML = "10";
-        loc.style.opacity = 0;
-        loc.style.color = "#ff6f3c";
-        availableIndexes.push(i);
-
-        //Enables user to click on and enter values into all indexes
-        document.getElementById(indexToThreeDigit(i)).addEventListener("click", clickAnIndex);
-    }
-
-    //Sets indexesShown to originalIndexes and removes those indexes from availableIndexes
-    indexesShown = [];
-    userIndexes = [],
-    notes = [];
-    for(var i = 0; i < originalIndexes.length; i++){
-        indexesShown[i] = originalIndexes[i];
-        userIndexes[i] = originalIndexes[i];
-        availableIndexes.splice(availableIndexes.indexOf(originalIndexes[i]) ,1);
-        
-        //Removes user's ability to click on and enter values into this index
-        document.getElementById(indexToThreeDigit(originalIndexes[i])).removeEventListener("click", clickAnIndex);
-    }
-
-    //Displays indexesShown (which at this point is originalIndexes)
-    puzzleToHTML(indexesShown);
-}
-
-//Clears display and generates new puzzle
-function newPuzzleClick(){
-    //Generates new puzzle
-    puzzle = generatePuzzle();
-    
-    //Clears board
-    var threeDigitCode, loc;
-    for(var i = 1; i <= 81; i++){
-        threeDigitCode = indexToThreeDigit(i);
-        loc = document.getElementById(threeDigitCode);
-        loc.innerHTML = "10";
-        loc.style.opacity = 0;
-        availableIndexes.push(i);
-    }
-
-    //Displays difficulties tab and removes help tab
-    diffInfo.style.display = "block";
-    helpInfo.style.display = "none";
-    chosenDiff.style.display = "none";
-    congrats.style.display = "none";
-
-    //RESET: Refills availableIndexes and clears displayed indexes
-    availableIndexes = [];
-    for(var i = 1; i <= 81; i++){
-        availableIndexes.push(i);
-    }
-    indexesShown = [],
-    userIndexes = [],
-    originalIndexes = [],
-    notes = [];
-}
-
-var indexesShown = [], //Contains only the indexes (1-81) revealed to user by the computer 
-    userIndexes = [],  //Contains indexes (1-81) displayed to user, includes computer revealed and user input
-    originalIndexes = [], //Contains only the indexes (1-81) originally revealed to the user
-    availableIndexes = [], //Contains the indexes (1-81) that can still be revealed to user; compliment set of "indexesShown"
-    notes = [];
-for(var i = 1; i <= 81; i++){
-    availableIndexes.push(i);
-} 
-
 //Ensures the boxes in the puzzle don't shrink in size if there are no revealed values in their row/column
 for(var i = 1; i <= 81; i++){
     var loc = document.getElementById(indexToThreeDigit(i));
@@ -364,9 +365,35 @@ function clickAnIndex(){
         var sec = currentID.substring(1,2);
         var num = currentID.substring(2,3);
 
-        //Blinker stuff
-        activated = false;
+        //Prepares current box for blinker
+        currentLocation.style.color = "#ffc93c";
+        currentLocation.style.opacity = 1;
+        
+        if(userPuzzle[row][sec][num] === 0 || userPuzzle[row][sec][num] === "" || userPuzzle[row][sec][num] === undefined){
+            currentLocation.innerHTML = "|";
+        }else{
+            currentLocation.innerHTML = userPuzzle[row][sec][num] + "|";     
+        }
+
+        //RESET: removes old keyListener and clears blinker from last box
+        window.removeEventListener("keydown", enterAValue);
+
         lastBlinker = currentBlinker;
+        clearInterval(lastBlinker);
+        if(!isNaN(lastID) && lastLocation.innerHTML.includes("|")){
+            lastRow = lastID.substring(0,1);
+            lastSec = lastID.substring(1,2);
+            lastNum = lastID.substring(2,3);
+
+            if(userPuzzle[lastRow][lastSec][lastNum] === 0 || userPuzzle[lastRow][lastSec][lastNum] === "" || userPuzzle[lastRow][lastSec][lastNum] === undefined){
+                lastLocation.innerHTML = "";
+            }else{
+                lastLocation.innerHTML = userPuzzle[lastRow][lastSec][lastNum];
+            }
+        }
+
+        //Displays real blinker in current box
+        activated = false;
         currentBlinker = setInterval(function() {
             if(userPuzzle[row][sec][num] === 0 || userPuzzle[row][sec][num] === "" || userPuzzle[row][sec][num] === undefined){
                 //Does this if the user HAS NOT enter anything into the box
@@ -388,16 +415,8 @@ function clickAnIndex(){
                 }
             }
         }, 700);
-        displayBlinker();
 
-        //RESET: removes old keyListener and blinkers
-        window.removeEventListener("keydown", enterAValue);
-        clearInterval(lastBlinker);
-        if(!isNaN(lastID) && lastLocation.innerHTML.includes("|")){
-            lastLocation.innerHTML = "";
-        }
-
-        //Listens for user key input
+        //Listens for key input
         window.addEventListener("keydown", enterAValue);
 
         function enterAValue(){
@@ -412,13 +431,6 @@ function clickAnIndex(){
             }
         }
     }
-}
-
-function displayBlinker(){
-    currentLocation.style.color = "#ffc93c";
-    currentLocation.innerHTML = "";
-    currentLocation.innerHTML += "|";
-    currentLocation.style.opacity = 1;
 }
 
 function checkUserBoard(){
@@ -438,3 +450,5 @@ function checkUserBoard(){
         congrats.style.display = "block";
     }
 }
+
+newPuzzle();   
