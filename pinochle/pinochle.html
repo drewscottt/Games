@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Pinochle</title>
+        
+        <link href='style.css' type='text/css' rel='stylesheet'/>
+        <link href="https://fonts.googleapis.com/css?family=Karla&display=swap" rel="stylesheet">
+    </head>
+
+    <h1 id="title">Pinochle</h1>
+
+    <div class="user-stuff">
+        <div id="userHand">
+            <img id="card-1" src="">
+            <img id="card-2" src="">
+            <img id="card-3" src="">
+            <img id="card-4" src="">
+            <img id="card-5" src="">
+            <img id="card-6" src="">
+            <img id="card-7" src="">
+            <img id="card-8" src="">
+            <img id="card-9" src="">
+            <img id="card-10" src="">
+            <img id="card-11" src="">
+            <img id="card-12" src="">
+            <img id="card-13" src="">
+            <img id="card-14" src="">
+            <img id="card-15" src="">
+            <img id="card-16" src="">
+        </div>
+        <h3 id="userMessage"></h3>
+        <img id="userCard" src="">
+        <h3 id="userNameTag">You</h3>
+        <div id="userBidBox">
+            <p id="selectAm">Select bid amount.</p>
+            <h2 id="valueBox">250</h2>
+            <h2 id="up">^</h2>
+            <h2 id="down">^</h2>
+            <h2 id="pass">Pass</h2>
+            <h2 id="okButton">OK</h2>
+        </div>
+    </div>
+
+    <div class="oneCPU-stuff">
+        <img id="oneCPUHand" src="images/card_back.png">
+        <h3 id="oneCPUMessage"></h3>
+        <img id="oneCPUCard" src="">
+        <h3 id="oneCPUNameTag">CPU #1</h3>  
+    </div>
+    
+    <div class="partner-stuff">
+        <img id="partnerHand" src="images/card_back.png">
+        <h3 id="partnerMessage"></h3>
+        <img id="partnerCard" src="">
+        <h3 id="partnerNameTag">Your Partner</h3>
+    </div>   
+
+    <div class="twoCPU-stuff">
+        <img id="twoCPUHand" src="images/card_back.png">
+        <h3 id="twoCPUMessage"></h3>
+        <img id="twoCPUCard" src="">
+        <h3 id="twoCPUNameTag">CPU #2</h3>
+    </div>     
+
+    <div class="compMsgs">
+        <h2 id="staticCompMsg"></h2>
+        <h2 id="activeCompMsg"></h2>
+    </div>
+
+    <div id="scoreTable">
+        <p id="userTeam">Your Team</p>
+        <p id="CPUTeam">CPU Team</p>
+
+        <p id="scoreTag">Score</p>
+        <p id="userTeamScore"></p>
+        <p id="CPUTeamScore"></p>
+
+        <p id="bidTag">Bid</p>
+        <p id="userTeamBid"></p>
+        <p id="CPUTeamBid"></p>
+
+        <p id="meldTag">Meld</p>
+        <p id="userTeamMeld"></p>
+        <p id="CPUTeamMeld"></p>
+
+        <p id="countersTag">Counters</p>
+        <p id="userTeamCounters"></p>
+        <p id="CPUTeamCounters"></p>
+
+        <p id="trumpTag">Trump Suit</p>
+        <p id="trumpSuit"></p>
+    </div>
+
+    <div id="trumpSuitOptions">
+        <img id="hearts" src="images/heart.png">
+        <img id="clubs" src="images/club.png">
+        <img id="diamonds" src="images/diamond.png">
+        <img id="spades" src="images/spade.png">
+    </div>
+
+    <div id="passCards">
+        <img id="pass-1" src="">
+        <img id="pass-2" src="">
+        <img id="pass-3" src="">
+        <img id="pass-4" src="">
+    </div>
+
+    <div id="meld-stuff">
+        <h2 id="playerMelding"></h2>
+        <div id="meldCards">
+            <img id="meld-1" src="">
+            <img id="meld-2" src="">
+            <img id="meld-3" src="">
+            <img id="meld-4" src="">
+            <img id="meld-5" src="">
+            <img id="meld-6" src="">
+            <img id="meld-7" src="">
+            <img id="meld-8" src="">
+            <img id="meld-9" src="">
+            <img id="meld-10" src="">
+            <img id="meld-11" src="">
+            <img id="meld-12" src="">
+        </div>
+        <p id="meldInfo"></p>
+    </div>
+
+    <script src="app.js"></script>
+</html>

@@ -1,0 +1,294 @@
+body{
+    background-color: #dae1e7;
+
+    font-family: 'Karla', sans-serif;
+    color: #dd6b4d;
+    
+    cursor: default;
+}
+
+#title{
+    text-align: center;
+    
+    color: #1c4b82;
+}
+
+#userHand{
+    position: absolute;
+    bottom: 6%;
+    left: 6%;
+}
+
+#partnerHand, #oneCPUHand, #twoCPUHand{
+    position: absolute;
+    width: 7%;
+    display: none;
+}
+
+#partnerHand{
+    left: 46.5%;
+    top: 13.5%;
+}
+
+#oneCPUHand, #twoCPUHand{
+    top: 35%;
+    transform: rotate(90deg);
+}
+
+#oneCPUHand{
+    left: 5%;
+}
+
+#twoCPUHand{
+    right: 5%;
+}
+
+#staticCompMsg, #activeCompMsg, #userMessage, #oneCPUMessage, #partnerMessage, #twoCPUMessage, #userNameTag, #oneCPUNameTag, #partnerNameTag, #twoCPUNameTag{
+    position: absolute;
+    background-color: #1c4b82;
+    padding: .3%;
+    display: none;
+}
+
+#staticCompMsg{
+    left: 45.5%;
+    top: 39%;
+}
+
+#activeCompMsg{
+    left: 45%;
+    top: 45%;
+
+    display: block;
+    cursor: pointer;
+}
+
+#userMessage{
+    left: 45%;
+    top: 69%;  
+}
+
+#oneCPUMessage{
+    left: 15%;
+    top: 40%;
+}
+
+#partnerMessage{
+    left: 45%;
+    top: 29.5%;
+}
+
+#twoCPUMessage{
+    right: 15%;
+    top: 40%;
+}
+
+#userNameTag{
+    left: 49%;
+    top: 92%;
+}
+
+#oneCPUNameTag{
+    left: 6%;
+    top: 49%;
+}
+
+#partnerNameTag{
+    left: 45.8%;
+    top: 6%;
+}
+
+#twoCPUNameTag{
+    left: 89%;
+    top: 49%;
+}
+
+#userCard{
+    position: absolute;
+    left: 46.5%;
+    top: 55%;
+}
+
+#oneCPUCard{
+    position: absolute;
+    left: 37%;
+    top: 44%;
+}
+
+#partnerCard{
+    position: absolute;
+    left: 46.5%;
+    top: 33%;
+}
+
+#twoCPUCard{
+    position: absolute;
+    left: 56%;
+    top: 44%;
+}
+
+#userBidBox{
+    position: absolute;
+    left: 44.5%;
+    top: 58%;
+    
+    background-color: #1c4b82;
+    
+    padding-left: 1%;
+    padding-right: 7%;
+    padding-bottom: 1.5%;
+
+    display: none;
+}
+
+#selectAm{
+    position: absolute;
+    top: -17%;
+    left: 5%;
+}
+
+#valueBox{
+    background-color: #dae1e7;
+    padding: 3%;
+}
+
+#up{
+    position: absolute;
+    left: 45%;
+    top: -8%;
+
+    cursor: pointer;
+}
+
+#down{
+    transform: rotate(180deg);
+
+    position: absolute;
+    left: 45%;
+    top: 11%;
+
+    cursor: pointer;
+}
+
+#okButton{
+    position: absolute;
+    top: 43%;
+    left: 41%;
+
+    cursor: pointer;
+}
+
+#pass{
+    position: absolute;
+    left: 60%;
+    top: 0%;
+
+    cursor: pointer;
+}
+
+#scoreTable{
+    position: absolute;
+    left: 3%;
+    top: 3%;
+
+    background-color: #1c4b82;
+
+    padding-right: 20%;
+    padding-left: 1%;
+    padding-bottom: 15%;
+
+    display: none;
+}
+
+#userTeam, #CPUTeam, #scoreTag, #userTeamScore, #CPUTeamScore, #bidTag, #userTeamBid, #CPUTeamBid, #meldTag, #countersTag, #trumpTag, #trumpSuit, #CPUTeamMeld, #userTeamMeld{
+    position: absolute;
+}
+
+#userTeam{
+    left: 30%;
+}
+
+#CPUTeam{
+    left: 70%;
+}
+
+#scoreTag, #userTeamScore, #CPUTeamScore{ 
+    top: 17%;
+}
+
+#userTeamScore, #userTeamBid, #userTeamMeld{
+    left: 42%;
+}
+
+#CPUTeamScore, #CPUTeamBid, #CPUTeamMeld{
+    left: 80%;
+}
+
+#bidTag, #userTeamBid, #CPUTeamBid{
+    top: 34%;
+}
+
+#meldTag, #userTeamMeld, #CPUTeamMeld{
+    top: 51%;
+}
+
+#countersTag{
+    top: 68%;
+}
+
+#trumpTag, #trumpSuit{
+    top: 82%;    
+}
+
+#trumpSuit{
+    left: 50%;
+}
+
+#hearts, #clubs, #diamonds, #spades{
+    position: absolute;
+    top: 50%;
+
+    width: 8%;
+
+    display: none;
+    cursor: pointer;
+}
+
+#hearts{
+    left: 30%;
+}
+
+#clubs{
+    left: 41%;
+}
+
+#diamonds{
+    left: 52%;
+}
+
+#spades{
+    left: 63%;
+}
+
+#passCards{
+    position: absolute;
+    left: 36%;
+    top: 54%;
+
+    display: none;
+}
+
+#meld-stuff{
+    position: absolute;
+    left: 17%;
+    top: 44%;
+
+    padding-left: 1%;
+    margin-right: -10%;
+
+    display: none;
+}
+
+#meldCards > *{
+    width: 10%;
+}
