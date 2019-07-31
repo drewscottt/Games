@@ -136,16 +136,12 @@ function sortUserHand(){
     userHand = secondTempHand;
 }
 
-//Displays and adds an eventListener to all the cards in userHand
+//Displays all the cards in userHand
 function displayuserHand(){
     for(var i = 0; i < userHand.length; i++){
         var cardHTML = document.getElementById("card-" + (i+1).toString());
         cardHTML.src = "images/" + userHand[i].value + "_" + userHand[i].suit + ".jpeg";
     }
-
-    document.getElementById("partnerHand").style.display = "block";
-    document.getElementById("oneCPUHand").style.display = "block";
-    document.getElementById("twoCPUHand").style.display = "block";
 }
 
 var userCard = document.getElementById("userCard");
@@ -205,6 +201,10 @@ okButton.addEventListener("click", function(){
     userMessage.innerHTML = "I bid " + currentBid.toString() + ".";
     userMessage.style.left = "47.5%";
     
+    if(lastBid === true){
+        passCounter = 3;
+    }
+
     turn = 0;
     setTimeout(bid, 1000);
 });
@@ -238,30 +238,55 @@ function startGame(){
     startHand();
 }
 
-var firstDealer = Math.floor(Math.random() *  3);
-var turn = firstDealer;
-//Starts a hand by selecting a dealer and then begins the bidding process
+var dealer = Math.floor(Math.random() *  3);
+var turn;
+//Starts a hand: selects a dealer and displays proper elements
 function startHand(){
+    currentBid = 240,
+    userIsBidding = true, 
+    oneCPUIsBidding = true, 
+    partnerIsBidding = true, 
+    twoCPUIsBidding = true,
+    passCounter = 0,
+    lastBid = false,
+    trumpSuit;
+
+    shuffleDeck();
+    dealDeck();
+    sortUserHand();
+    
+    turn = dealer;
+    
     //Selects a dealer and displays which user has been selected
-    switch(turn){
+    switch(dealer){
         case 0:
             staticCompMsg.innerHTML = "It's your deal.";
             staticCompMsg.style.left = "45%";
+            dealer = 1;
             break;
         case 1:
             staticCompMsg.innerHTML = "It's CPU #1's deal.";
             staticCompMsg.style.left = "43%";
+            dealer = 2;
             break;
         case 2:
             staticCompMsg.innerHTML = "It's your partner's deal.";
             staticCompMsg.style.left = "41%"; 
+            dealer = 3;
             break;
         case 3:
             staticCompMsg.innerHTML = "It's CPU #2's deal.";
             staticCompMsg.style.left = "43%"; 
+            dealer = 0;
     }
 
-    //Displays user name tags
+    //Undisplays player messages
+    userMessage.style.display = "none";
+    oneCPUMessage.style.display = "none";
+    partnerMessage.style.display = "none";
+    twoCPUMessage.style.display = "none";
+
+    //Displays player name tags
     userNameTag.style.display = "block";
     oneCPUNameTag.style.display = "block";
     partnerNameTag.style.display = "block";
@@ -274,44 +299,53 @@ function startHand(){
     activeCompMsg.style.display = "block";
     activeCompMsg.innerHTML = "Click to deal cards.";
     activeCompMsg.addEventListener("click", clickToDeal);
-}
-//Added to activeCompMsg's eventListener
-function clickToDeal(){
-    activeCompMsg.removeEventListener("click", clickToDeal);
-    //Displays the cards in the user's hand
-    displayuserHand(userHand);
 
-    //Displays who has first bid (based on who the dealer was)
-    switch(turn){
-        case 0:
-            oneCPUMessage.innerHTML = "It's my bid first.";
-            oneCPUMessage.style.display = "block";
-            break;
-        case 1:
-            partnerMessage.innerHTML = "It's my bid first.";
-            partnerMessage.style.display = "block"; 
-            break;
-        case 2:
-            twoCPUMessage.innerHTML = "It's my bid first.";
-            twoCPUMessage.style.display = "block";
-            break;
-        case 3:
-            userMessage.innerHTML = "It's my bid first.";
-            userMessage.style.display = "block";
+    function clickToDeal(){
+        activeCompMsg.removeEventListener("click", clickToDeal);
+        
+        staticCompMsg.style.display = "none";
+
+        //Displays all the hands
+        displayuserHand();
+        document.getElementById("partnerHand").style.display = "block";
+        document.getElementById("oneCPUHand").style.display = "block";
+        document.getElementById("twoCPUHand").style.display = "block";
+
+        //Displays who has first bid (based on who the dealer was)
+        switch(turn){
+            case 0:
+                oneCPUMessage.innerHTML = "It's my bid first.";
+                oneCPUMessage.style.display = "block";
+                break;
+            case 1:
+                partnerMessage.innerHTML = "It's my bid first.";
+                partnerMessage.style.left = "45%";
+                partnerMessage.style.display = "block"; 
+                break;
+            case 2:
+                twoCPUMessage.innerHTML = "It's my bid first.";
+                twoCPUMessage.style.display = "block";
+                break;
+            case 3:
+                userMessage.innerHTML = "It's my bid first.";
+                userMessage.style.left = "45%";
+                userMessage.style.display = "block";
+        }
+        activeCompMsg.style.display = "none";
+
+        //Starts the bidding process
+        setTimeout(bid, 1000);
     }
-    activeCompMsg.style.display = "none";
-
-    //Starts the bidding process
-    setTimeout(bid, 1000);
 }
 
-var currentBid = 240;
-var userIsBidding = true, 
+var currentBid = 240,
+    userIsBidding = true, 
     oneCPUIsBidding = true, 
     partnerIsBidding = true, 
-    twoCPUIsBidding = true;
-var passCounter = 0;
-var trumpSuit;
+    twoCPUIsBidding = true,
+    passCounter = 0,
+    lastBid = false,
+    trumpSuit;
 function bid(){
     staticCompMsg.style.display = "none";
     //Does this if fewer than 3 of the users stopped bidding (more than 1 are bidding)
@@ -331,6 +365,10 @@ function bid(){
                     }else{
                         currentBid += 10;
         
+                        if(lastBid === true){
+                            passCounter = 3;
+                        }
+
                         oneCPUMessage.innerHTML = "I bid " + (currentBid).toString() + ".";
                     }
 
@@ -358,6 +396,10 @@ function bid(){
                     }else{
                         currentBid += 10;
         
+                        if(lastBid === true){
+                            passCounter = 3;
+                        }
+
                         partnerMessage.innerHTML = "I bid " + (currentBid).toString() + ".";
                         partnerMessage.style.left = "47%";
                     }
@@ -382,13 +424,22 @@ function bid(){
                     }else{
                         currentBid += 10;
         
+                        if(lastBid === true){
+                            passCounter = 3;
+                        }
+
                         twoCPUMessage.innerHTML = "I bid " + (currentBid).toString() + ".";
                     }
                     valueBox.innerHTML = (currentBid + 10).toString();
+                
+                    turn = 3;
+                    setTimeout(bid, 1000);
+                }else{
+                    turn = 3;
+                    bid();
                 }
     
-                turn = 3;
-                bid();
+                
                 break;  
             case 3: //user
                 if(userIsBidding){
@@ -398,9 +449,22 @@ function bid(){
                     bid();
                 }
             }
-    //Does this if 3 users stopped bidding (only one user still bidding)         
+    //Does this if 3 players stopped bidding (only one player still bidding)         
     }else{
-        selectTrump();
+        if(currentBid === 240 && lastBid !== true){
+            //First 3 players have passed, so prompts 4th to bid
+            lastBid = true
+            passCounter = 2;
+            bid();
+        }else if(currentBid === 240 && lastBid === true){
+            //All 4 players pass
+            staticCompMsg.style.display = "block";
+            staticCompMsg.style.left = "41%";
+            staticCompMsg.innerHTML = "All four players passed."
+            setTimeout(startHand, 1000);
+        }else{
+            selectTrump();
+        }
     }
 }
 
@@ -492,10 +556,9 @@ function selectTrump(){
             pTBid.innerHTML = "--";
 
             staticCompMsg.style.display = "block";
-            CPUSelectTrump();
 
             turn = 1;
-            setTimeout(passCards, 1000);
+            CPUSelectTrump();
             break;
         case 2://partner
             partnerMessage.innerHTML = "I took the bid for " + currentBid + ".";
@@ -507,10 +570,9 @@ function selectTrump(){
             CPUTBid.innerHTML = "--";
 
             staticCompMsg.style.display = "block";
-            CPUSelectTrump();
 
             turn = 2;
-            setTimeout(passCards, 1000);
+            CPUSelectTrump();
             break;
         case 3://twoCPU
             twoCPUMessage.innerHTML = "I took the bid for " + currentBid + ".";
@@ -522,14 +584,14 @@ function selectTrump(){
             pTBid.innerHTML = "--";
 
             staticCompMsg.style.display = "block";
-            CPUSelectTrump();
 
             turn = 3;
-            setTimeout(passCards, 1000);
+            CPUSelectTrump();
     }
 
 
     function assignTrumpValue(){
+        activeCompMsg.removeEventListener("click", assignTrumpValue);
         for(var c = 0; c < currentDeck.length; c++){
             if(currentDeck[c].suit === trumpSuit){
                 currentDeck[c].trump = true;
@@ -559,140 +621,341 @@ function selectTrump(){
                 trumpSuit = "spades";
                 document.getElementById("trumpSuit").innerHTML = "Spades";  
         }
-
         assignTrumpValue();
+
+        activeCompMsg.style.display = "block";
+        activeCompMsg.innerHTML = "OK";
+        activeCompMsg.style.left = "48.75%";
+        activeCompMsg.addEventListener("click", passCards);
     }
 }
 
+var userCardsHTML = document.getElementById("userHand").children;
 var passedCards = document.getElementById("passCards");
 function passCards(){
+    activeCompMsg.removeEventListener("click", passCards);
+
     switch(turn){
         case 0://user
             userMessage.style.display = "none";
-        
-            var tempHand = partnerHand;
-            var passHand = [];
-            var randIndex;
 
-            //Selects 4 cards from the user's partner's hand to pass to the user
+            //Randomly selects 4 cards from the partnerHand to pass to the user
             for(var i = 0; i < 4; i++){
-                randIndex = Math.floor(Math.random() * tempHand.length);
-                passHand[i] = tempHand[randIndex];
-                tempHand.splice(randIndex, 1);
-                userHand.push(passHand[i]);
-
-                document.getElementById("pass-" + (i+1).toString()).src = "images/" + passHand[i].value + "_" + passHand[i].suit + ".jpeg";
+                var randIndex = Math.floor(Math.random() * partnerHand.length);
+                userHand.push(partnerHand[randIndex]);
+                document.getElementById("pass-" + (i+1).toString()).src = "images/" + partnerHand[randIndex].value + "_" + partnerHand[randIndex].suit + ".jpeg";
+                partnerHand.splice(randIndex, 1);
             }
             sortUserHand();
 
+            //Shows user passed cards and prompts to accept them
             passedCards.style.display = "block";
-
             staticCompMsg.innerHTML = "Your partner passed you these cards.";
             staticCompMsg.style.left = "35.5%";
-
             activeCompMsg.style.display = "block";
             activeCompMsg.style.left = "44%";
             activeCompMsg.innerHTML = "Click to accept.";
             activeCompMsg.addEventListener("click", clickToAccept);
             
             function clickToAccept(){
-                activeCompMsg.style.display = "none";
+                //Reset stuff
                 activeCompMsg.removeEventListener("click", clickToAccept);
-                
-                selectPassBack();
+                activeCompMsg.style.display = "none";
+                document.getElementById("pass-1").src = "";
+                document.getElementById("pass-2").src = "";
+                document.getElementById("pass-3").src = "";
+                document.getElementById("pass-4").src = "";
+
+                //Shows the passed cards in the user's hand (16 cards in hand now)
+                displayuserHand();
+
+                //Adds eventListeners to each of the cards in user's hand
+                for(var i = 0; i < userCardsHTML.length; i++){
+                    userCardsHTML[i].style.width = "7.4%";
+                    userCardsHTML[i].style.marginLeft = "-1.8%";
+                    userCardsHTML[i].style.cursor = "pointer";
+                    userCardsHTML[i].addEventListener("mouseover", mouseoverCard);
+                    userCardsHTML[i].addEventListener("mouseleave", mouseleaveCard);
+                    userCardsHTML[i].addEventListener("click", clickCardToPassBack);
+                }
+
+                //Prompts user to pass back
+                staticCompMsg.innerHTML = "Select four cards to pass back to your partner.";
+                staticCompMsg.style.left = "31%";
             
-                function selectPassBack(){
-                    //Adds eventListener to each of the cards in user's hand
-                    var userCardsHTML = document.getElementById("userHand").children;
-                    for(var i = 0; i < userCardsHTML.length; i++){
-                        userCardsHTML[i].style.marginLeft = "-1.8%";
-                        userCardsHTML[i].style.cursor = "pointer";
-                        userCardsHTML[i].addEventListener("mouseover", function(){
-                            this.style.width = ""
-                        });
-                        userCardsHTML[i].addEventListener("click", clickCardToPassBack);
+                //Enables user to click cards to pass back to partner
+                var passedCardsArr = [],
+                    passedCardCounter = 0;
+                function clickCardToPassBack(){
+                    passedCardCounter++;
+                    //Displays user's selected card in pass back location
+                    document.getElementById("pass-" + passedCardCounter.toString()).src = this.src;
+
+                    //Removes user's selected card from userHand
+                    var cardIndex = this.id.slice(this.id.indexOf("-") + 1, this.id.length) - 1;
+                    var card = userHand[cardIndex];
+                    userHand.splice(cardIndex, 1);
+                    passedCardsArr.push(card);
+
+                    //Creates new spacing between cards as they are getting passed to partner
+                    for(var z = 0; z < userCardsHTML.length; z++){
+                        var currentMarginLeft = userCardsHTML[z].style.marginLeft;
+                        currentMarginLeft = currentMarginLeft.slice(0, currentMarginLeft.length - 1);
+                        var newMarginLeft = (parseFloat(currentMarginLeft) + .45).toString() + "%";
+                        userCardsHTML[z].style.marginLeft = newMarginLeft;
                     }
 
+                    //Displays the user's hand as cards are being passed (fewer cards being shown 16 -> 12)
                     displayuserHand();
+                    document.getElementById("card-" + (17-passedCardCounter).toString()).style.display = "none";
 
-                    document.getElementById("pass-1").src = "";
-                    document.getElementById("pass-2").src = "";
-                    document.getElementById("pass-3").src = "";
-                    document.getElementById("pass-4").src = "";
-
-                    staticCompMsg.innerHTML = "Select four cards to pass back to your partner.";
-                    staticCompMsg.style.left = "31%";
-                
-                    var passedCardsArr = [],
-                        passedCardCounter = 0;
-                    function clickCardToPassBack(){
-                        passedCardCounter++;
-                        document.getElementById("pass-" + passedCardCounter.toString()).src = this.src;
-
-                        var cardIndex = this.id.slice(this.id.indexOf("-") + 1, this.id.length) - 1;
-                        var card = userHand[cardIndex];
-                        userHand.splice(cardIndex, 1);
-                        passedCardsArr.push(card);
-
-                        for(var z = 0; z < userCardsHTML.length; z++){
-                            var currentMarginLeft = userCardsHTML[z].style.marginLeft;
-                            currentMarginLeft = currentMarginLeft.slice(0, currentMarginLeft.length - 1);
-                            var newMarginLeft = (parseFloat(currentMarginLeft) + .45).toString() + "%";
-                            userCardsHTML[z].style.marginLeft = newMarginLeft;
+                    //Does this once the user has selected 4 cards to pass back
+                    if(passedCardCounter > 3){
+                        //Removes eventListeners from cards in user's hand
+                        for(var j = 0; j < userCardsHTML.length; j++){
+                            userCardsHTML[j].style.cursor = "default";
+                            userCardsHTML[j].style.width = "7.7%";
+                            userCardsHTML[j].removeEventListener("mouseover", mouseoverCard);
+                            userCardsHTML[j].removeEventListener("mouseleave", mouseleaveCard);
+                            userCardsHTML[j].removeEventListener("click", clickCardToPassBack);
+                            userCardsHTML[j].style.marginLeft = "0%";
                         }
 
-                        displayuserHand();
-                        document.getElementById("card-" + (17-passedCardCounter).toString()).style.display = "none";
+                        staticCompMsg.style.display = "none";
 
-                        if(passedCardCounter > 3){
-                            for(var j = 0; j < document.getElementById("userHand").children.length; j++){
-                                document.getElementById("userHand").children[j].removeEventListener("click", clickCardToPassBack);
-                                document.getElementById("userHand").children[j].style.marginLeft = "0%";
+                        //Prompts user to pass cards back to partner
+                        activeCompMsg.style.display = "block";
+                        activeCompMsg.style.left = "42.5%";
+                        activeCompMsg.innerHTML = "Click to pass cards."
+                        activeCompMsg.addEventListener("click", passCardsBack);
+
+                        //Begins bidding process
+                        function passCardsBack(){
+                            activeCompMsg.removeEventListener("click", passCardsBack);
+                            activeCompMsg.style.display = "none";
+                            
+                            passedCards.style.display = "none";
+
+                            staticCompMsg.style.display = "block";
+                            staticCompMsg.style.left = "41.5%";
+                            staticCompMsg.innerHTML = "Now it's time to meld.";
+                            
+                            for(var q = 0; q < 4; q++){
+                                partnerHand.push(passedCardsArr[q]);
                             }
 
-                            staticCompMsg.style.display = "none";
-
-                            activeCompMsg.style.display = "block";
-                            activeCompMsg.style.left = "42.5%";
-                            activeCompMsg.innerHTML = "Click to pass cards."
-                            activeCompMsg.addEventListener("click", passCardsBack);
-
-                            function passCardsBack(){
-                                activeCompMsg.removeEventListener("click", passCardsBack);
-                                activeCompMsg.style.display = "none";
-                                
-                                passedCards.style.display = "none";
-
-                                staticCompMsg.style.display = "block";
-                                staticCompMsg.style.left = "41.5%";
-                                staticCompMsg.innerHTML = "Now it's time to meld.";
-                                
-                                for(var q = 0; q < 4; q++){
-                                    partnerHand.push(passedCardsArr[q]);
-                                }
-
-                                for(var l = 0; l < userCardsHTML.length; l++){
-                                    userCardsHTML[l].style.cursor = "default";
-                                }
-
-                                setTimeout(meld, 1000);
-                            }
+                            setTimeout(meld, 1000);
                         }
                     }
                 }
             }
             break;
-        case 1:
+        case 1://oneCPU
+            oneCPUMessage.style.display = "none";
+
+            //Selects 4 cards from twoCPU's hand to pass to oneCPU
+            for(var i = 0; i < 4; i++){
+                var randIndex = Math.floor(Math.random() * twoCPUHand.length);
+                oneCPUHand.push(twoCPUHand[randIndex]);
+                twoCPUHand.splice(randIndex, 1);
+            }
+            
+            //Informs user that CPUs have passed cards and prompts to move on
+            staticCompMsg.style.display = "block";
+            staticCompMsg.style.left = "37%";
+            staticCompMsg.innerHTML = "CPU #2 passed 4 cards to CPU #1.";
+
+            activeCompMsg.style.display = "block";
+            activeCompMsg.style.left = "48.75%";
+            activeCompMsg.innerHTML = "OK";
+            activeCompMsg.addEventListener("click", oneCPUPassBack);
+
+            function oneCPUPassBack(){
+                activeCompMsg.removeEventListener("click", oneCPUPassBack);
+
+                staticCompMsg.style.left = "35%";
+                staticCompMsg.innerHTML = "CPU #1 passed 4 cards back to CPU #2.";
+
+                //Selects 4 cards from the oneCPU's hand to pass to twoCPU
+                for(var i = 0; i < 4; i++){
+                    randIndex = Math.floor(Math.random() * oneCPUHand.length);
+                    twoCPUHand.push(oneCPUHand[randIndex]);
+                    oneCPUHand.splice(randIndex, 1);
+                }
+
+                activeCompMsg.addEventListener("click", acceptCPUPassBack);
+            }
             break;
-        case 2:
+        case 2://partner
+            partnerMessage.style.display = "none";
+            activeCompMsg.style.display = "none";
+            staticCompMsg.style.display = "block";
+            staticCompMsg.innerHTML = "Select four cards to pass to your partner.";
+
+            //Adds eventListener to each of the cards in user's hand
+            for(var i = 0; i < userCardsHTML.length; i++){
+                userCardsHTML[i].style.marginLeft = "0%";
+                userCardsHTML[i].style.cursor = "pointer";
+                userCardsHTML[i].style.width = "7.7%";
+                userCardsHTML[i].addEventListener("mouseover", mouseoverCard);
+                userCardsHTML[i].addEventListener("mouseleave", mouseleaveCard);
+                userCardsHTML[i].addEventListener("click", clickCardToPass);
+            }
+
+            //Resets passedCards images
+            passedCards.style.display = "block";
+            document.getElementById("pass-1").src = "";
+            document.getElementById("pass-2").src = "";
+            document.getElementById("pass-3").src = "";
+            document.getElementById("pass-4").src = "";
+        
+            var passedCardsArr = [],
+                passedCardCounter = 0;
+            function clickCardToPass(){
+                passedCardCounter++;
+                
+                //Increases width of cards as they are getting passed to partner
+                for(var z = 0; z < userCardsHTML.length; z++){
+                    var marginLeft = parseFloat(userCardsHTML[z].style.marginLeft.slice(0, this.style.marginLeft.indexOf("%")));
+                    marginLeft += .9;
+                    marginLeft = marginLeft.toString() + "%";
+                    userCardsHTML[z].style.marginLeft = marginLeft;
+                }
+
+                //Displays user's selected card in pass back location
+                document.getElementById("pass-" + passedCardCounter.toString()).src = this.src;
+
+                //Removes selected card from userHand
+                var cardIndex = this.id.slice(this.id.indexOf("-") + 1, this.id.length) - 1;
+                var card = userHand[cardIndex];
+                userHand.splice(cardIndex, 1);
+                passedCardsArr.push(card);
+
+                //Displays user's hand each time card is selected
+                displayuserHand();
+                document.getElementById("card-" + (13-passedCardCounter).toString()).style.display = "none";
+
+                //Does this if 4 cards have been passed by user
+                if(passedCardCounter > 3){
+                    //Removes eventListeners from user's cards
+                    for(var j = 0; j < userCardsHTML.length; j++){
+                        userCardsHTML[j].style.width = "7.7%";
+                        userCardsHTML[j].removeEventListener("mouseover", mouseoverCard);
+                        userCardsHTML[j].removeEventListener("mouseleave", mouseleaveCard);
+                        userCardsHTML[j].removeEventListener("click", clickCardToPass);
+                        userCardsHTML[j].style.cursor = "default";
+                    }
+
+                    staticCompMsg.style.display = "none";
+
+                    //Prompts user to pass cards
+                    activeCompMsg.style.display = "block";
+                    activeCompMsg.style.left = "42.5%";
+                    activeCompMsg.innerHTML = "Click to pass cards."
+                    activeCompMsg.addEventListener("click", passCards);
+
+                    function passCards(){
+                        activeCompMsg.removeEventListener("click", passCards);
+                        
+                        //Pushes passed cards to partner's hand
+                        for(var q = 0; q < 4; q++){
+                            partnerHand.push(passedCardsArr[q]);
+                        }
+
+                        //Selects 4 cards from the user's partner's hand to pass to the user
+                        for(var i = 0; i < 4; i++){
+                            var randIndex = Math.floor(Math.random() * partnerHand.length);
+                            userHand.push(partnerHand[randIndex]);
+                            document.getElementById("pass-" + (i+1).toString()).src = "images/" + partnerHand[randIndex].value + "_" + partnerHand[randIndex].suit + ".jpeg";
+                            partnerHand.splice(randIndex, 1); 
+                        }
+
+                        //Shows user partner's passed cards and prompts to accept them
+                        passedCards.style.display = "block";
+                        staticCompMsg.style.display = "block";
+                        staticCompMsg.innerHTML = "Your partner passed you these cards.";
+                        staticCompMsg.style.left = "35.5%";
+                        activeCompMsg.style.display = "block";
+                        activeCompMsg.style.left = "44%";
+                        activeCompMsg.innerHTML = "Click to accept.";
+                        activeCompMsg.addEventListener("click", clickToAccept);
+                        
+                        //Starts melding
+                        function clickToAccept(){
+                            activeCompMsg.style.display = "none";
+                            activeCompMsg.removeEventListener("click", clickToAccept);
+
+                            for(var i = 0; i < userCardsHTML.length; i++){
+                                userCardsHTML[i].style.marginLeft = ".45%";
+                                userCardsHTML[i].style.float = "left";
+                                userCardsHTML[i].style.display = "block";
+                            }
+                            document.getElementById("userHand").style.bottom = "6.3%";
+
+                            passedCards.style.display = "none";
+
+                            sortUserHand();
+                            displayuserHand();
+
+                            staticCompMsg.style.display = "block";
+                            staticCompMsg.style.left = "41.5%";
+                            staticCompMsg.innerHTML = "Now it's time to meld.";
+
+                            setTimeout(meld, 1000);
+                        }
+                    }
+                }
+            }
             break;
-        case 3:
+        case 3://twoCPU
+            twoCPUMessage.style.display = "none";
+
+            //Selects 4 cards from oneCPU's hand to pass to twoCPU
+            for(var i = 0; i < 4; i++){
+                var randIndex = Math.floor(Math.random() * oneCPUHand.length);
+                twoCPUHand.push(oneCPUHand[randIndex]);
+                oneCPUHand.splice(randIndex, 1);
+            }
+            
+            staticCompMsg.style.display = "block";
+            staticCompMsg.style.left = "37%";
+            staticCompMsg.innerHTML = "CPU #1 passed 4 cards to CPU #2.";
+
+            activeCompMsg.style.display = "block";
+            activeCompMsg.style.left = "48.75%";
+            activeCompMsg.innerHTML = "OK";
+            activeCompMsg.addEventListener("click", twoCPUPassBack);
+
+            function twoCPUPassBack(){
+                activeCompMsg.removeEventListener("click", twoCPUPassBack);
+
+                staticCompMsg.style.left = "35%";
+                staticCompMsg.innerHTML = "CPU #2 passed 4 cards back to CPU #1.";
+
+                //Selects 4 cards from twoCPU's hand to pass to oneCPU
+                for(var i = 0; i < 4; i++){
+                    randIndex = Math.floor(Math.random() * twoCPUHand.length);
+                    oneCPUHand.push(twoCPUHand[randIndex]);
+                    twoCPUHand.splice(randIndex, 1);
+                }
+
+                activeCompMsg.addEventListener("click", acceptCPUPassBack);
+            }
     }
+
+    function acceptCPUPassBack(){
+        activeCompMsg.removeEventListener("click", acceptCPUPassBack);
+        activeCompMsg.style.display = "none";
+
+        staticCompMsg.style.display = "block";
+        staticCompMsg.style.left = "41.5%";
+        staticCompMsg.innerHTML = "Now it's time to meld.";
+
+        setTimeout(meld, 1000);
+    } 
 }
 
-var meldCounter = 0,
-    userMeldAmount = 0,
-    CPUMeldAmount = 0;
+var meldCounter = 0;
 var userTeamMeld = document.getElementById("userTeamMeld");
 userTeamMeld.innerHTML = "0";
 var CPUTeamMeld = document.getElementById("CPUTeamMeld");
@@ -1216,12 +1479,11 @@ function meld(){
         for(var i = 0; i < meldCards.length; i++){
             if(meldCards[i].src.length > 75){
                 meldDisplayed++;
-                console.log(meldCards[i].src)
             }
         }
 
         for(var i = 0; i < meldDisplayed; i++){
-            meldCards[i].style.width = (3 * (12-meldDisplayed)).toString() + "%";
+            meldCards[i].style.width = (50/meldDisplayed).toString() + "%";
         }
 
         activeCompMsg.innerHTML = "OK";
@@ -1266,6 +1528,20 @@ function meld(){
 //     cHTML.removeEventListener("click", cardClick);
 // }
 
-shuffleDeck();
-dealDeck();
-sortUserHand();
+function mouseoverCard(){
+    this.removeEventListener("mouseover", mouseoverCard);
+    var width = parseFloat(this.style.width.slice(0, this.style.width.indexOf("%")));
+    width += .5;
+    width = width.toString() + "%";
+    this.style.width = width;
+    this.addEventListener("mouseleave", mouseleaveCard);
+}
+
+function mouseleaveCard(){
+    this.removeEventListener("mouseleave", mouseleaveCard);
+    var width = parseFloat(this.style.width.slice(0, this.style.width.indexOf("%")));
+    width -= .5;
+    width = width.toString() + "%";
+    this.style.width = width;
+    this.addEventListener("mouseover", mouseoverCard);
+}
